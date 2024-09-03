@@ -3,6 +3,28 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
 const { get_user_id } = require("../utils/helper")
 
+const delete_user_by_username = async (req, res) => {
+    const { username } = req.body;
+
+    try {
+        const result = await UserModel.destroy({
+            where: {
+                username: username
+            }
+        });
+
+        if (result > 0) {
+            return res.status(200).json({ message: "User deleted successfully" });
+        } else {
+            return res.status(404).json({ message: "User not found" });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "An error occurred while deleting the user" });
+    }
+}
+
+
 const login = async (req, res) => {
     try {
         let { username, password } = req.body
@@ -172,5 +194,6 @@ module.exports = {
     logout,
     register,
     load_user_profile,
-    update_user_profile
+    update_user_profile,
+    delete_user_by_username
 }
